@@ -28,7 +28,7 @@ module Spree
     end
 
     def success
-      @payment = Spree::Payment.where(identifier: params[:payment]).last
+      @payment = Spree::Payment.where(id: params[:payment]).last
       @khipu_receipt = Spree::KhipuPaymentReceipt.create(payment: @payment)
 
       @payment.order.next!
@@ -41,7 +41,7 @@ module Spree
     end
 
     def cancel
-      @payment = Spree::Payment.where(identifier: params[:payment]).last
+      @payment = Spree::Payment.where(id: params[:payment]).last
       @khipu_receipt = Spree::KhipuPaymentReceipt.create(payment: @payment)
 
       redirect_to checkout_state_path(:payment) and return
@@ -52,11 +52,11 @@ module Spree
         map = provider.get_payment_notification(params)
 
         # Aceptar el pago
-        @payment = Spree::Payment.where(identifier: map["transaction_id"]).last
+        @payment = Spree::Payment.where(id: map["transaction_id"]).last
 
         render  nothing: true, status: :ok and return if @payment.order.payment_state == 'paid'
 
-        @khipu_receipt = Spree::KhipuPaymentReceipt.where(transaction_id: @payment.identifier).last
+        @khipu_receipt = Spree::KhipuPaymentReceipt.where(transaction_id: @payment.id).last
         @khipu_receipt.update(map.select{ |k,v| @khipu_receipt.attributes.keys.include? k })
         @khipu_receipt.save!
 
