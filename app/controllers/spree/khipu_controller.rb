@@ -82,11 +82,11 @@ module Spree
         payer_email:    payment.order.email,
         bank_id:        "",
         expires_date:   "",
-        transaction_id: payment.identifier,
+        transaction_id: payment.id,
         custom:         "",
         notify_url:     khipu_notify_url,
-        return_url:     khipu_success_url(payment.identifier),
-        cancel_url:     khipu_cancel_url(payment.identifier),
+        return_url:     khipu_success_url(payment.id),
+        cancel_url:     khipu_cancel_url(payment.id),
         picture_url:    "" # Rails.env.production? ? view_context.image_url('Logo Reu blanco.png') : ""
       }
     end
@@ -117,7 +117,7 @@ module Spree
     end
 
     def payment_method
-      params[:payment_method_id] ? (Spree::PaymentMethod.find(params[:payment_method_id]) || Spree::Payment.where(identifier: khipu_params[:transaction_id]).last.payment_method) : Spree::PaymentMethod.where(type: "Spree::Gateway::KhipuGateway").last
+      params[:payment_method_id] ? (Spree::PaymentMethod.find(params[:payment_method_id]) || Spree::Payment.where(id: khipu_params[:transaction_id]).last.payment_method) : Spree::PaymentMethod.where(type: "Spree::Gateway::KhipuGateway").last
     end
 
     def provider
