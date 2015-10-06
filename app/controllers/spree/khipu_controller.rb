@@ -22,6 +22,7 @@ module Spree
         redirect_to khipu_payment_url
 
       rescue Khipu::ApiError => error
+        logger.debug "error en Khipu: #{error.message}"
         flash[:error] = 'Hubo un problema con Khipu, intente nuevamente más tarde.'
         redirect_to checkout_state_path(:payment) and return
       end
